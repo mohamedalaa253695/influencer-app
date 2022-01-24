@@ -39,7 +39,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'password', 'first_name', 'last_name',
+        'email', 'password', 'first_name', 'last_name', 'role_id'
     ];
 
     protected $guarded = [
@@ -63,4 +63,9 @@ class User extends Authenticatable
     protected $casts = [
 
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 }

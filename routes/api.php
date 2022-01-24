@@ -29,7 +29,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('user', [UserController::class, 'user']);
+    Route::put('users/info', [UserController::class, 'updateInfo']);
+    Route::put('users/password', [UserController::class, 'updatePassword']);
+
     Route::apiResource('users', 'UserController');
+    Route::apiResource('roles', 'RoleController');
 });
 
 // Route::apiResource('users', 'UserController');
