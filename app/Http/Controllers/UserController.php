@@ -3,14 +3,15 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Routing\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 use App\Http\Requests\UpdateInfoRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UpdatePasswordRequest;
-use App\Http\Resources\UserResource;
 use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class UserController extends Controller
@@ -22,8 +23,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
-
+        Gate::authorize('view', 'users');
         // return User::with('role')->paginate(3);
         $users = User::paginate(5);
         return UserResource::collection($users);
@@ -37,6 +37,7 @@ class UserController extends Controller
      */
     public function store(UserCreateRequest $request)
     {
+        Gate::authorize('edit', 'users');
         $user = User::create($request->only('first_name', 'last_name', 'email') +
                     ['password' => Hash::make('password')]);
         return response(new UserResource($user), HttpFoundationResponse::HTTP_CREATED);
@@ -50,7 +51,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        Gate::authorize('view', 'users');
         return new UserResource($user);
     }
 
@@ -63,6 +64,7 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
+        Gate::authorize('edit', 'users');
         $user = User::find($user->id);
         // dd($user);
         $user->update($request->only('first_name', 'last_name', 'email', 'role_id'));
@@ -78,7 +80,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        Gate::authorize('edit', 'users');
 
         User::destroy($user->id);
 
@@ -87,7 +89,13 @@ class UserController extends Controller
 
     public function user()
     {
-        return Auth::user();
+        $user = Auth::user();
+
+        return(new UserResource($user))->additional([
+            'data' => [
+                'permission' => $user->permissions()
+            ]
+        ]);
     }
 
     /**

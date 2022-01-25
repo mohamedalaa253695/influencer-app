@@ -5,6 +5,7 @@ use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\RoleResource;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoleController extends Controller
@@ -16,6 +17,8 @@ class RoleController extends Controller
      */
     public function index()
     {
+        Gate::authorize('view', 'roles');
+
         return RoleResource::collection(Role::all());
     }
 
@@ -27,6 +30,8 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('edit', 'roles');
+
         $role = Role::create($request->only('name'));
 
         if ($permissions = $request->input('permissions')) {
@@ -49,6 +54,8 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
+        Gate::authorize('view', 'roles');
+
         return new RoleResource($role);
     }
 
@@ -61,6 +68,8 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
+        Gate::authorize('edit', 'roles');
+
         $role->update($request->only('name'));
 
         DB::table('role_permission')->where('role_id', $role->id)->delete();
@@ -84,6 +93,8 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        Gate::authorize('edit', 'roles');
+
         DB::table('role_permission')->where('role_id', $role->id)->delete();
         Role::destroy($role->id);
         return response(null, Response::HTTP_NO_CONTENT);

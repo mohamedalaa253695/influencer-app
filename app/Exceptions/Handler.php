@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -50,6 +49,8 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        return parent::render($request, $exception);
+        return response([
+            'error' => $exception->getMessage(),
+        ], $exception->getCode() ? $exception->getCode() : 400);
     }
 }
