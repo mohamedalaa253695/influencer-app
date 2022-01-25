@@ -12,7 +12,7 @@ use App\Http\Requests\UpdateInfoRequest;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\UpdatePasswordRequest;
-use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -40,7 +40,7 @@ class UserController extends Controller
         Gate::authorize('edit', 'users');
         $user = User::create($request->only('first_name', 'last_name', 'email') +
                     ['password' => Hash::make('password')]);
-        return response(new UserResource($user), HttpFoundationResponse::HTTP_CREATED);
+        return response(new UserResource($user), 200);
     }
 
     /**
@@ -108,7 +108,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $user->update($request->only('first_name', 'last_name', 'email', 'role_id'));
-        return response(new UserResource($user), HttpFoundationResponse::HTTP_ACCEPTED);
+        return response(new UserResource($user), Response::HTTP_ACCEPTED);
     }
 
     public function updatePassword(UpdatePasswordRequest $request)
