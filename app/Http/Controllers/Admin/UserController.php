@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\UserRole;
 // use App\Providers\AuthServiceProvider;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -36,10 +37,14 @@ class UserController extends Controller
     {
         Gate::authorize('edit', 'users');
         // dd($request);
-        $user = User::create($request->only('first_name', 'last_name', 'email', 'role_id', 'is_influencer') +
+        $user = User::create($request->only('first_name', 'last_name', 'email', 'is_influencer') +
                     ['password' => Hash::make('password')]);
 
         // dd($user);
+        UserRole::create([
+            'user_id' => $user->id,
+            'role_id' => $request->input('role_id'),
+        ]);
         return response(new UserResource($user), Response::HTTP_CREATED);
     }
 
@@ -66,8 +71,13 @@ class UserController extends Controller
     {
         Gate::authorize('edit', 'users');
         $user = User::find($user->id);
-        // dd($user);
-        $user->update($request->only('first_name', 'last_name', 'email', 'role_id'));
+        $user->update($request->only('first_name', 'last_name', 'email'));
+        UserRole::where('user_id', $user->id)->delete();
+
+        UserRole::create([
+            'user_id' => $user->id,
+            'role_id' => $request->input('role_id'),
+        ]);
 
         return response(new UserResource($user), 202);
     }

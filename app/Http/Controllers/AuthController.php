@@ -48,7 +48,7 @@ class AuthController
         [
             'password' => Hash::make($request->input('password')),
             'is_influencer' => 1,
-            'role_id' => 1
+            // 'role_id' => 1
         ]);
         return response($user, Response::HTTP_CREATED);
     }
