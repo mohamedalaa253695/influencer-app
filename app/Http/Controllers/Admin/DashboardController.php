@@ -1,11 +1,11 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Order;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\ChartResource;
 
-class DashboardController extends Controller
+class DashboardController
 {
     /**
      * Display a listing of the resource.

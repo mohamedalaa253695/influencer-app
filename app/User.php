@@ -28,6 +28,15 @@ use Laravel\Passport\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $role_id
+ * @property int $is_influencer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
+ * @property-read int|null $clients_count
+ * @property-read \App\Role $role
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $tokens
+ * @property-read int|null $tokens_count
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsInfluencer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRoleId($value)
  */
 class User extends Authenticatable
 {
@@ -39,7 +48,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'password', 'first_name', 'last_name', 'role_id'
+        'email', 'password', 'first_name', 'last_name', 'role_id', 'is_influencer'
     ];
 
     protected $guarded = [
@@ -78,4 +87,14 @@ class User extends Authenticatable
     // {
     //     return $this->permissions()->contains("view_{$access}");
     // }
+
+    public function isAdmin() :bool
+    {
+        return $this->is_influencer === 0;
+    }
+
+    public function isInfluencer() :bool
+    {
+        return $this->is_influencer === 1;
+    }
 }

@@ -29,11 +29,13 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes();
         Gate::define('view', function (User $user, $model) {
             // return $user->hasAccess("view_{$model}") || $user->hasAccess("edit_{$model}");
+            // return true;
+            // dd($user->role->permissions);
             return $user->permissions()->contains("view_{$model}") || $user->permissions()->contains("edit_{$model}");
         });
 
         Gate::define('edit', function (User $user, $model) {
-            $user->permissions()->contains("edit_{$model}");
+            return $user->permissions()->contains("edit_{$model}");
         });
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Product;
 use Illuminate\Http\Request;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ProductCreateRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProductController extends Controller
+class ProductController
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +19,7 @@ class ProductController extends Controller
     public function index()
     {
         Gate::authorize('view', 'products');
-        $products = Product::paginate(5);
+        $products = Product::paginate(15);
         return ProductResource::collection($products);
     }
 

@@ -22,11 +22,13 @@ class UserCreateRequest extends FormRequest
      */
     public function rules()
     {
+        // dd('here');
         return [
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',
-            'role_id' => 'required'
+            'role_id' => 'required',
+            // 'is_influencer' => 'required'
         ];
     }
 }

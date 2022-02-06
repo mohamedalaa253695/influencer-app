@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ImageController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ImageController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Influencer\ProductController as InfluencerProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,10 +23,14 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('user', [AuthController::class, 'user']);
+    Route::put('users/info', [AuthController::class, 'updateInfo']);
+    Route::put('users/password', [AuthController::class, 'updatePassword']);
+});
+
+//Admin
+Route::group(['middleware' => 'auth:api', 'prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::get('chart', [DashboardController::class, 'chart']);
-    Route::get('user', [UserController::class, 'user']);
-    Route::put('users/info', [UserController::class, 'updateInfo']);
-    Route::put('users/password', [UserController::class, 'updatePassword']);
     Route::get('orders/export', [OrderController::class, 'exportAsCsv']);
 
     Route::post('upload', [ImageController::class, 'upload']);
@@ -36,4 +40,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('products', 'ProductController');
     Route::apiResource('orders', 'OrderController')->only('index', 'show');
     Route::apiResource('permissions', 'PermissionController')->only('index');
+});
+
+//Influencer
+Route::group(['middelware' => 'auth:api', 'prefix' => 'influencer', 'namespace' => 'Influencer'], function () {
+    Route::get('products', [InfluencerProductController::class, 'index']);
 });

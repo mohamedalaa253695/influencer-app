@@ -31,9 +31,10 @@ class Authenticate extends Middleware
      */
     public function handle($request, Closure $next, ...$guards)
     {
-        if ($jwt = $request->cookie('jwt')) {
-            $request->headers->set('Authorization', 'Bearer', $jwt);
-        }
+        // if ($request->cookie('jwt')) {
+        //     $request->headers->set('Authorization', 'Bearer', $request->cookie('jwt'));
+        // }
+
         $this->authenticate($request, $guards);
 
         return $next($request);
