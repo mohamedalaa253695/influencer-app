@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Influencer\LinkController;
 use App\Http\Controllers\Influencer\ProductController as InfluencerProductController;
 
 /*
@@ -29,7 +30,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 //Admin
-Route::group(['middleware' => 'auth:api', 'prefix' => 'admin', 'namespace' => 'Admin'], function () {
+Route::group(['middleware' => ['auth:api', 'scope:admin'],
+    'prefix' => 'admin',
+    'namespace' => 'Admin'
+], function () {
     Route::get('chart', [DashboardController::class, 'chart']);
     Route::get('orders/export', [OrderController::class, 'exportAsCsv']);
 
@@ -43,6 +47,11 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'admin', 'namespace' => 'A
 });
 
 //Influencer
-Route::group(['middelware' => 'auth:api', 'prefix' => 'influencer', 'namespace' => 'Influencer'], function () {
+Route::group(['prefix' => 'influencer', 'namespace' => 'Influencer'], function () {
     Route::get('products', [InfluencerProductController::class, 'index']);
+
+    Route::group(['middelware' => ['auth:api', 'scope:influencer'],
+    ], function () {
+    Route::post('links', [LinkController::class, 'store']);
+});
 });
