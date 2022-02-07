@@ -15,8 +15,10 @@ class LinkResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'code' => $this->code
+            'code' => $this->code,
+            'user' => new UserResource($this->user),
+            'products' => ProductResource::collection($this->products),
+
         ];
     }
 }

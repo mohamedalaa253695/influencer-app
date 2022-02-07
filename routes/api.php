@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Checkout\LinkController as CheckoutLinkController;
+use App\Http\Controllers\Checkout\OrderController as CheckoutOrderController;
 use App\Http\Controllers\Influencer\LinkController;
 use App\Http\Controllers\Influencer\ProductController as InfluencerProductController;
 
@@ -52,6 +54,14 @@ Route::group(['prefix' => 'influencer', 'namespace' => 'Influencer'], function (
 
     Route::group(['middelware' => ['auth:api', 'scope:influencer'],
     ], function () {
-    Route::post('links', [LinkController::class, 'store']);
+        Route::post('links', [LinkController::class, 'store']);
+    });
 });
+
+Route::group([
+    'prefix' => 'checkout',
+    'namespace' => 'Checkout',
+], function () {
+    Route::get('links/{code}', [CheckoutLinkController::class, 'show']);
+    Route::post('orders', [CheckoutOrderController::class, 'store']);
 });
