@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Checkout;
 
+use App\Events\OrderCompletedEvent;
 use App\Link;
 use App\Order;
 use App\OrderItem;
@@ -80,6 +81,8 @@ class OrderController
         }
         $order->complete = 1 ;
         $order->save();
+
+        event(new OrderCompletedEvent($order));
 
         return response([
             'message' => 'success'

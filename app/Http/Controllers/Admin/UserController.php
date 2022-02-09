@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
+use App\Events\AdminAddedEvent;
 use App\User;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Gate;
@@ -45,6 +46,7 @@ class UserController extends Controller
             'user_id' => $user->id,
             'role_id' => $request->input('role_id'),
         ]);
+        event(new AdminAddedEvent($user));
         return response(new UserResource($user), Response::HTTP_CREATED);
     }
 
