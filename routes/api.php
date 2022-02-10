@@ -9,6 +9,7 @@ use App\Http\Controllers\Checkout\LinkController as CheckoutLinkController;
 use App\Http\Controllers\Checkout\OrderController as CheckoutOrderController;
 use App\Http\Controllers\Influencer\LinkController;
 use App\Http\Controllers\Influencer\ProductController as InfluencerProductController;
+use App\Http\Controllers\Influencer\StatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,9 +53,11 @@ Route::group(['middleware' => ['auth:api', 'scope:admin'],
 Route::group(['prefix' => 'influencer', 'namespace' => 'Influencer'], function () {
     Route::get('products', [InfluencerProductController::class, 'index']);
 
-    Route::group(['middelware' => ['auth:api', 'scope:influencer'],
+    Route::group(['middleware' => ['auth:api', 'scope:influencer'],
     ], function () {
         Route::post('links', [LinkController::class, 'store']);
+        Route::get('stats', [StatsController::class, 'index']);
+        Route::get('rankings', [StatsController::class, 'rankings']);
     });
 });
 
