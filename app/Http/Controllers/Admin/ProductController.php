@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ProductUpdatedEvent;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -35,6 +36,8 @@ class ProductController
 
         $product = Product::create($request->only('title', 'description', 'image', 'price'));
 
+        event(new ProductUpdatedEvent());
+
         return response($product, Response::HTTP_CREATED);
     }
 
@@ -63,6 +66,8 @@ class ProductController
         Gate::authorize('edit', 'products');
 
         $product->update($request->only('title', 'description', 'image', 'price'));
+
+        event(new ProductUpdatedEvent());
 
         return response($product, Response::HTTP_CREATED);
     }
