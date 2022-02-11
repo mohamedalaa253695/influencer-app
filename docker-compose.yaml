@@ -9,10 +9,12 @@ services:
       DB_DATABASE: influencer
       DB_USERNAME: root
       DB_PASSWORD: root
+      REDIS_HOST: redis
     ports:
       - 8080:8080
     depends_on:
       - db
+      - redis
     networks:
       - app
     volumes:
@@ -30,5 +32,13 @@ services:
       - 33066:3306
     networks:
       - app
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - app
+
 networks:
   app:

@@ -9,6 +9,7 @@ class ProductController
 {
     public function index(HttpRequest $request)
     {
+        sleep(2);
         $query = Product::query();
         if ($s = $request->input('s')) {
             $query->whereRaw("title LIKE '%{$s}%'")
