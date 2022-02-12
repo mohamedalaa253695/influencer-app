@@ -12,7 +12,7 @@ class ProductController
     public function index(HttpRequest $request)
     {
         $products = Cache::remember('products', 60 * 30, function () use ($request) {
-            sleep(2);
+            // sleep(2);
             return Product::all();
         });
 
