@@ -44,7 +44,6 @@ class UpdateRankingsCommand extends Command
         $users->each(function (User $user) {
             $orders = Order::where('user_id', $user->id)->where('complete', 1)->get();
             $revenue = $orders->sum(function (Order $order) {
-                // dd($order->influencer_total);
                 return (int) $order->influencer_total;
             });
 
