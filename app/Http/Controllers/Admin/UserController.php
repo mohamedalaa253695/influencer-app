@@ -1,13 +1,13 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
-use App\Events\AdminAddedEvent;
 use App\User;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Jobs\AdminAdded;
 use App\UserRole;
 // use App\Providers\AuthServiceProvider;
 
@@ -37,16 +37,14 @@ class UserController extends Controller
     public function store(UserCreateRequest $request)
     {
         Gate::authorize('edit', 'users');
-        // dd($request);
         $user = User::create($request->only('first_name', 'last_name', 'email', 'is_influencer') +
                     ['password' => Hash::make('password')]);
 
-        // dd($user);
         UserRole::create([
             'user_id' => $user->id,
             'role_id' => $request->input('role_id'),
         ]);
-        event(new AdminAddedEvent($user));
+        AdminAdded::dispatch($user->email);
         return response(new UserResource($user), Response::HTTP_CREATED);
     }
 
@@ -93,8 +91,8 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         Gate::authorize('edit', 'users');
-
         User::destroy($user->id);
+        dd($user);
 
         return response(null, 204);
     }

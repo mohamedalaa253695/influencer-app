@@ -4,14 +4,15 @@ namespace App\Providers;
 use App\Events\AdminAddedEvent;
 use App\Events\OrderCompletedEvent;
 use App\Events\ProductUpdatedEvent;
-use App\Listeners\NotifyAddedAdminListener;
-use App\Listeners\NotifyAdminListener;
 use App\Listeners\ProductCacheFlush;
-use App\Listeners\UpdateRankingsListener;
+use Illuminate\Support\Facades\Event;
+use App\Listeners\NotifyAdminListener;
 use Illuminate\Auth\Events\Registered;
+use App\Listeners\UpdateRankingsListener;
+use App\Listeners\NotifyAddedAdminListener;
+use App\Listeners\NotifyInfluencerListener;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -25,13 +26,13 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         OrderCompletedEvent::class => [
-            NotifyAdminListener::class,
-            NotifyInfluencerListener::class,
+            // NotifyAdminListener::class,
+            // NotifyInfluencerListener::class,
             UpdateRankingsListener::class,
         ],
-        AdminAddedEvent::class => [
-            NotifyAddedAdminListener::class,
-        ],
+        // AdminAddedEvent::class => [
+        //     NotifyAddedAdminListener::class,
+        // ],
 
         ProductUpdatedEvent::class => [
             ProductCacheFlush::class

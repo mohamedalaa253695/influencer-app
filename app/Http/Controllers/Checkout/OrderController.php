@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Checkout;
 
 use App\Events\OrderCompletedEvent;
+use App\Jobs\OrderCompleted;
 use App\Link;
 use App\Order;
 use App\OrderItem;
@@ -14,6 +15,7 @@ class OrderController
 {
     public function store(Request $request)
     {
+        // dd('here');
         $link = Link::where('code', $request->input('code'))->first();
         // dd($link->user->email);
         DB::beginTransaction();
@@ -46,7 +48,7 @@ class OrderController
 
             $orderItem->save();
 
-            $line_items[] = [
+            $lineItems[] = [
                 'name' => $product->title,
                 'description' => $product->description,
                 'images' => [
@@ -59,12 +61,14 @@ class OrderController
         }
 
         $stripe = Stripe::make(env('STRIPE_SECRET'));
+
         $source = $stripe->checkout()->sessions()->create([
             'payment_method_types' => ['card'],
-            'line_items' => [],
+            'line_items' => $lineItems,
             'success_url' => env('CHECKOUT_URL') . '/success?source={CHECKOUT_SESSION_ID}',
-            'cancel_url' => env('CHECKOUT_URL') . '/error'
+            'cancel_url' => env('CHECKOUT_URL') . '/error',
         ]);
+        // dd('here');
 
         $order->transaction_id = $source['id'];
         $order->save();
@@ -82,7 +86,12 @@ class OrderController
         $order->complete = 1 ;
         $order->save();
 
+        // dd($order);
         event(new OrderCompletedEvent($order));
+        $data = $order->toArray();
+        $data['admin_total'] = $order->admin_total;
+        $data['influencer_total'] = $order->influencer_total;
+        OrderCompleted::dispatch($data);
 
         return response([
             'message' => 'success'

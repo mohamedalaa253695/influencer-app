@@ -1,4 +1,4 @@
-FROM php:8.0-fpm
+FROM php:7.4-fpm
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -15,8 +15,9 @@ RUN pecl install redis \
     && docker-php-ext-enable redis 
 
 
-RUN docker-php-ext-install pdo pdo_mysql  exif pcntl bcmath gd
-
+RUN docker-php-ext-install pdo pdo_mysql  exif pcntl bcmath gd 
+RUN docker-php-ext-install sockets
+RUN docker-php-ext-enable sockets
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /app
