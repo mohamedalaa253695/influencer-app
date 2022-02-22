@@ -2,30 +2,34 @@
 namespace App\Http\Controllers\Admin;
 
 use App\User;
+use App\UserRole;
+use App\Jobs\AdminAdded;
+use Illuminate\Http\Request;
+use App\Services\UserService;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Jobs\AdminAdded;
-use App\UserRole;
 // use App\Providers\AuthServiceProvider;
 
+use App\Http\Requests\UserCreateRequest;
+// use Request;
+use App\Http\Requests\UserUpdateRequest;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    private $userService;
+
+    public function __construct(UserService $userService)
     {
-        Gate::authorize('view', 'users');
+        $this->userService = $userService;
+    }
+
+    public function index(Request $request)
+    {
         // return User::with('role')->paginate(3);
-        $users = User::paginate(15);
-        return UserResource::collection($users);
+        $this->userService->allows('view', 'users');
+        return $this->userService->all($request->input('page', 1));
     }
 
     /**
@@ -36,9 +40,11 @@ class UserController extends Controller
      */
     public function store(UserCreateRequest $request)
     {
-        Gate::authorize('edit', 'users');
-        $user = User::create($request->only('first_name', 'last_name', 'email', 'is_influencer') +
-                    ['password' => Hash::make('password')]);
+        $this->userService->allows('edit', 'users');
+        $data = User::create($request->only('first_name', 'last_name', 'email', 'is_influencer') +
+                    ['password' => 'password']);
+
+        $user = $this->userService->create($data);
 
         UserRole::create([
             'user_id' => $user->id,
@@ -56,7 +62,11 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        Gate::authorize('view', 'users');
+        $this->userService->allows('view', 'users');
+        // Gate::authorize('view', 'users');
+        // dd($user->id);
+        $user = $this->userService->get($user->id);
+
         return new UserResource($user);
     }
 
@@ -69,9 +79,11 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        Gate::authorize('edit', 'users');
-        $user = User::find($user->id);
-        $user->update($request->only('first_name', 'last_name', 'email'));
+        $this->userService->allows('edit', 'users');
+        $user = $this->userService->update($user->id, $request->only('first_name', 'last_name', 'email'));
+
+        // $user = User::find($user->id);
+        // $user->update($request->only('first_name', 'last_name', 'email'));
         UserRole::where('user_id', $user->id)->delete();
 
         UserRole::create([
@@ -90,10 +102,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        Gate::authorize('edit', 'users');
-        User::destroy($user->id);
-        dd($user);
+        $this->userService->allows('edit', 'users');
+        $this->userService->delete($user->id);
 
-        return response(null, 204);
+        // dd($user);
+
+        return response(null, HttpResponse::HTTP_NO_CONTENT);
     }
 }
