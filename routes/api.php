@@ -56,11 +56,11 @@ Route::group([
     });
 });
 
-Route::group([
-    'prefix' => 'checkout',
-    'namespace' => 'Checkout',
-], function () {
-    Route::get('links/{code}', [CheckoutLinkController::class, 'show']);
-    Route::post('orders', [CheckoutOrderController::class, 'store']);
-    Route::post('orders/confirm', [CheckoutOrderController::class, 'confirm']);
-});
+// Route::group([
+//     'prefix' => 'checkout',
+//     'namespace' => 'Checkout',
+// ], function () {
+//     Route::get('links/{code}', [CheckoutLinkController::class, 'show']);
+//     Route::post('orders', [CheckoutOrderController::class, 'store']);
+//     Route::post('orders/confirm', [CheckoutOrderController::class, 'confirm']);
+// });

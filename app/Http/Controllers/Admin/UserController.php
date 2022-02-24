@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
-use App\User;
 use App\UserRole;
 use App\Jobs\AdminAdded;
 use Illuminate\Http\Request;
@@ -27,22 +26,16 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        // return User::with('role')->paginate(3);
         $this->userService->allows('view', 'users');
         return $this->userService->all($request->input('page', 1));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(UserCreateRequest $request)
     {
         $this->userService->allows('edit', 'users');
-        $data = User::create($request->only('first_name', 'last_name', 'email', 'is_influencer') +
-                    ['password' => 'password']);
+
+        $data = $request->only('first_name', 'last_name', 'email', 'is_influencer') +
+                    ['password' => 'password'];
 
         $user = $this->userService->create($data);
 
@@ -54,13 +47,7 @@ class UserController extends Controller
         return response(new UserResource($user), Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function show(User $user)
+    public function show($user)
     {
         $this->userService->allows('view', 'users');
         // Gate::authorize('view', 'users');
@@ -70,20 +57,11 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UserUpdateRequest $request, User $user)
+    public function update(UserUpdateRequest $request, $user)
     {
         $this->userService->allows('edit', 'users');
         $user = $this->userService->update($user->id, $request->only('first_name', 'last_name', 'email'));
 
-        // $user = User::find($user->id);
-        // $user->update($request->only('first_name', 'last_name', 'email'));
         UserRole::where('user_id', $user->id)->delete();
 
         UserRole::create([
@@ -94,13 +72,7 @@ class UserController extends Controller
         return response(new UserResource($user), 202);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(User $user)
+    public function destroy($user)
     {
         $this->userService->allows('edit', 'users');
         $this->userService->delete($user->id);

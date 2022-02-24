@@ -2,15 +2,22 @@
 namespace App\Http\Controllers\Influencer;
 
 use App\Link;
-use App\User;
 use App\Order;
 use Illuminate\Http\Request;
+use App\Services\UserService;
 
 class StatsController
 {
+    private $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index(Request $request)
     {
-        $user = $request->user('api');
+        $user = $this->userService->getUser();
         // dd($user);
         $links = Link::where('user_id', $user->id)->get();
         return $links->map(function (Link $link) {
@@ -28,13 +35,17 @@ class StatsController
 
     public function rankings()
     {
-        $users = User::where('is_influencer', 1)->get();
+        $users = collect($this->userService->all(-1));
 
-        $rankings = $users->map(function (User $user) {
+        $users = $users->filter(function ($user) {
+            return $user->is_influencer;
+        });
+
+        $rankings = $users->map(function ($user) {
             $orders = Order::where('user_id', $user->id)->where('complete', 1)->get();
 
             return [
-                'name' => $user->full_name,
+                'name' => $user->fullName(),
                 'revenue' => $orders->sum(function (Order $order) {
                     return (int) $order->influencer_total;
                 }),

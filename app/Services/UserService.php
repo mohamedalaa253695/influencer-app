@@ -33,22 +33,11 @@ class UserService
         return Http::withHeaders($this->headers());
     }
 
-    public function parseUser($json): User
-    {
-        $user = new User();
-        $user->id = $json['id'];
-        $user->first_name = $json['first_name'];
-        $user->last_name = $json['last_name'];
-        $user->email = $json['email'];
-        $user->is_influencer = $json['is_influencer'] ?? 0;
-        return $user;
-    }
-
     public function getUser(): User
     {
         $json = Http::withHeaders($this->headers())->get("{$this->endpoint}/user")->json();
 
-        return $this->parseUser($json);
+        return new User($json);
     }
 
     public function isAdmin()
@@ -69,24 +58,29 @@ class UserService
     public function all($page)
     {
         return $this->request()->get("{$this->endpoint}/users?page={$page}")->json();
+
+        // $usersObject =  (object)[];
+        // foreach($users as $user){
+
+        // }
     }
 
     public function get($id): User
     {
         $json = $this->request()->get("{$this->endpoint}/users/{$id}")->json();
-        return $this->parseUser($json);
+        return new User($json);
     }
 
     public function create($data)
     {
         $json = $this->request()->get("{$this->endpoint}/users/{$data}")->json();
-        return $this->parseUser($json);
+        return new User($json);
     }
 
     public function update($id, $data)
     {
         $json = $this->request()->put("{$this->endpoint}/users/{$id}", $data)->json();
-        return $this->parseUser($json);
+        return new User($json);
     }
 
     public function delete($id)

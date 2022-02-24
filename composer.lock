@@ -4,8 +4,34 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3c1a558d0d840fb18ec8169ab9df35f4",
+    "content-hash": "0dd9a545309379596ab6893c426a4402",
     "packages": [
+        {
+            "name": "antoniopapa/common",
+            "version": "0.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/antoniopapa/common.git",
+                "reference": "a2d32ee6b81e19da39525a8afdc099975f968015"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/antoniopapa/common/zipball/a2d32ee6b81e19da39525a8afdc099975f968015",
+                "reference": "a2d32ee6b81e19da39525a8afdc099975f968015",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^7.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Common libraries for Microservices",
+            "support": {
+                "issues": "https://github.com/antoniopapa/common/issues",
+                "source": "https://github.com/antoniopapa/common/tree/0.0.4"
+            },
+            "time": "2020-09-17T13:38:28+00:00"
+        },
         {
             "name": "asm89/stack-cors",
             "version": "v2.1.1",
