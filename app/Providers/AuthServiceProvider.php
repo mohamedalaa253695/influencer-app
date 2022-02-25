@@ -32,9 +32,6 @@ class AuthServiceProvider extends ServiceProvider
         ]);
 
         Gate::define('view', function ($user, $model) {
-            // return $user->hasAccess("view_{$model}") || $user->hasAccess("edit_{$model}");
-            // return true;
-            // dd($user->role->permissions);
             return $user->permissions()->contains("view_{$model}") || $user->permissions()->contains("edit_{$model}");
         });
 

@@ -22,7 +22,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
 
             $this->mergeWhen(Auth::user() && Auth::user()->isInfluencer(), [
-                'revenue' => $this->revenue
+                'revenue' => $this->revenue()
             ]),
         ];
     }

@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ProductCreateRequest;
+use App\Jobs\ProductCreated;
+use App\Jobs\ProductDeleted;
+use App\Jobs\ProductUpdated;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductController
@@ -37,6 +40,8 @@ class ProductController
         $product = Product::create($request->only('title', 'description', 'image', 'price'));
 
         event(new ProductUpdatedEvent());
+
+        ProductCreated::dispatch($product->toArray())->onQueue('checkout_queue');
 
         return response($product, Response::HTTP_CREATED);
     }
@@ -68,6 +73,7 @@ class ProductController
         $product->update($request->only('title', 'description', 'image', 'price'));
 
         event(new ProductUpdatedEvent());
+        ProductUpdated::dispatch($product->toArray())->onQueue('checkout_queue');
 
         return response($product, Response::HTTP_CREATED);
     }
@@ -83,6 +89,9 @@ class ProductController
         Gate::authorize('edit', 'products');
 
         Product::destroy($product->id);
+
+        ProductDeleted::dispatch($product->id)->onQueue('checkout_queue');
+
         return response(null, Response::HTTP_NO_CONTENT);
     }
 }

@@ -17,7 +17,6 @@ class AuthController
     public function user(Request $request)
     {
         $user = $this->userService->getUser();
-
         $resource = new UserResource($user);
 
         if ($user->isInfluencer()) {
@@ -27,6 +26,7 @@ class AuthController
                 ],
             ]);
         }
+        // dd($user->role());
 
         return $resource->additional([
             'data' => [

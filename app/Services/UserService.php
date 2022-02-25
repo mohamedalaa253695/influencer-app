@@ -58,11 +58,6 @@ class UserService
     public function all($page)
     {
         return $this->request()->get("{$this->endpoint}/users?page={$page}")->json();
-
-        // $usersObject =  (object)[];
-        // foreach($users as $user){
-
-        // }
     }
 
     public function get($id): User
@@ -73,18 +68,21 @@ class UserService
 
     public function create($data)
     {
-        $json = $this->request()->get("{$this->endpoint}/users/{$data}")->json();
+        $json = $this->request()->post("{$this->endpoint}/users/", $data)->json();
+        // dd(new User($json));
         return new User($json);
     }
 
     public function update($id, $data)
     {
         $json = $this->request()->put("{$this->endpoint}/users/{$id}", $data)->json();
+
         return new User($json);
     }
 
     public function delete($id)
     {
+        // dd("{$this->endpoint}/users/{$id}");
         return $this->request()->delete("{$this->endpoint}/users/{$id}")->successful();
     }
 }

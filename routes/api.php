@@ -42,19 +42,19 @@ Route::group([
 
 //Influencer
 
-Route::group([
-    'prefix' => 'influencer',
-    'namespace' => 'Influencer'
-], function () {
-    Route::get('products', 'Influencer\ProductController@index');
-    Route::group([
-        'middleware' => 'scope.influencer'
-    ], function () {
-        Route::post('links', 'LinkController@store');
-        Route::get('stats', 'StatsController@index');
-        Route::get('rankings', 'StatsController@rankings');
-    });
-});
+// Route::group([
+//     'prefix' => 'influencer',
+//     'namespace' => 'Influencer'
+// ], function () {
+//     Route::get('products', 'Influencer\ProductController@index');
+//     Route::group([
+//         'middleware' => 'scope.influencer'
+//     ], function () {
+//         Route::post('links', 'LinkController@store');
+//         Route::get('stats', 'StatsController@index');
+//         Route::get('rankings', 'StatsController@rankings');
+//     });
+// });
 
 // Route::group([
 //     'prefix' => 'checkout',

@@ -51,8 +51,8 @@ class UserController extends Controller
     {
         $this->userService->allows('view', 'users');
         // Gate::authorize('view', 'users');
-        // dd($user->id);
-        $user = $this->userService->get($user->id);
+        // dd($user);
+        $user = $this->userService->get($user);
 
         return new UserResource($user);
     }
@@ -60,8 +60,9 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, $user)
     {
         $this->userService->allows('edit', 'users');
-        $user = $this->userService->update($user->id, $request->only('first_name', 'last_name', 'email'));
-
+        // dd($user);
+        $user = $this->userService->update($user, $request->only('first_name', 'last_name', 'email'));
+        // dd($user->id);
         UserRole::where('user_id', $user->id)->delete();
 
         UserRole::create([
@@ -75,7 +76,7 @@ class UserController extends Controller
     public function destroy($user)
     {
         $this->userService->allows('edit', 'users');
-        $this->userService->delete($user->id);
+        $this->userService->delete($user);
 
         // dd($user);
 

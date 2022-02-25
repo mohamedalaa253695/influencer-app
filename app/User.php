@@ -26,7 +26,7 @@ class User
 
     public function permissions()
     {
-        return $this->role->permissions->pluck('name');
+        return $this->role()->permissions->pluck('name');
     }
 
     // public function hasAccess($access)

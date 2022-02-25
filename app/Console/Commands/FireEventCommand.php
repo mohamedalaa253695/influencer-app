@@ -1,8 +1,9 @@
 <?php
 namespace App\Console\Commands;
 
-use App\Jobs\OrderCompleted;
+use App\Jobs\ProductCreated;
 use App\Order;
+use App\Product;
 use Illuminate\Console\Command;
 
 class FireEventCommand extends Command
@@ -21,11 +22,13 @@ class FireEventCommand extends Command
      */
     public function handle()
     {
-        $order = Order::find(1);
-        $data = $order->toArray();
+        // $order = Order::find(1);
+        // $data = $order->toArray();
 
-        $data['admin_total'] = $order->admin_total;
-        $data['influencer_total'] = $order->influencer_total;
-        OrderCompleted::dispatch($data);
+        // $data['admin_total'] = $order->admin_total;
+        // $data['influencer_total'] = $order->influencer_total;
+        $producnt = Product::find(1);
+
+        ProductCreated::dispatch($producnt->toArray())->onQueue('checkout_queue');
     }
 }
